@@ -1,0 +1,31 @@
+SISTEMA LOCAL DE IMPRESSÃO DE ETIQUETAS
+
+INICIAR NO WINDOWS
+1. Extraia todos os arquivos da pasta compactada.
+2. Tenha o Python 3.9 ou mais recente instalado.
+3. Clique duas vezes em "Iniciar etiquetas.bat".
+4. O navegador abrirá o sistema. Para encerrar, feche a janela preta do inicializador.
+
+O sistema usa somente o Python 3.9+ e bibliotecas que já vêm com ele. Não usa banco de dados
+nem precisa de internet. A tela fica disponível apenas neste computador (127.0.0.1).
+
+CADASTROS E BACKUP
+As empresas ficam em dados/empresas.json e as logos PNG em dados/logos/.
+Essa pasta é criada automaticamente quando o sistema é iniciado. Para fazer backup,
+copie a pasta "dados" para outro local. Para restaurar, feche o sistema e substitua a
+pasta "dados" pela cópia salva.
+
+ETIQUETAS
+- Uma etiqueta é gerada para cada volume.
+- O CNPJ aceita letras e números nas 12 primeiras posições e dois números no final.
+  A máscara é aplicada automaticamente.
+- O campo "Volumes grandes" duplica as etiquetas dos últimos volumes.
+  Exemplo: 5 volumes e 2 grandes gera 1/5, 2/5, 3/5, 4/5, 4/5, 5/5, 5/5.
+- Todas as notas fiscais informadas aparecem em todas as etiquetas.
+- A folha é A4 vertical. Selecione 10 etiquetas (duas colunas por cinco linhas) ou
+  6 etiquetas (uma coluna ocupando a largura da folha).
+- Na janela de impressão, escolha papel A4, orientação retrato e escala 100%.
+  Desative cabeçalhos e rodapés do navegador para imprimir apenas as etiquetas.
+
+Os campos da remessa não são guardados. O botão "Limpar campos" apaga a remessa atual,
+mas preserva as empresas cadastradas e o tema escolhido.

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f5f8">
+  <title>Etiquetas de Envio</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <img class="brand-logo" src="/logo.svg" alt="Logo">
+      </div>
+      <div>
+        <strong>Tagger</strong>
+        <span>Impressão local</span>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="button button-quiet" id="themeButton" type="button" aria-label="Alterar tema">☾ <span>Tema escuro</span></button>
+      <button class="button button-outline" id="settingsButton" type="button">⚙ Configurações</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="card form-card">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">NOVA REMESSA</p>
+          <h1>Dados da etiqueta</h1>
+        </div>
+      </div>
+      <form id="shipmentForm">
+        <label class="field">
+          <span>Empresa remetente</span>
+          <select id="companySelect" required>
+            <option value="">Selecione uma empresa</option>
+          </select>
+          <small id="companyHint">Cadastre as empresas em Configurações.</small>
+        </label>
+
+        <label class="field">
+          <span>Nome do cliente</span>
+          <input id="clientName" type="text" placeholder="Ex.: Maria Silva" autocomplete="off" required>
+        </label>
+
+        <label class="field">
+          <span>Número(s) da NF</span>
+          <textarea id="invoiceNumbers" rows="2" placeholder="Digite uma ou mais NFs, separadas por vírgula ou linha" required></textarea>
+          <small>Todas as NFs serão impressas em cada etiqueta.</small>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Quantidade de volumes</span>
+            <input id="volumeCount" type="number" min="1" max="500" value="1" required>
+          </label>
+          <label class="field">
+            <span>Volumes grandes</span>
+            <input id="largeVolumes" type="number" min="0" max="500" value="0" required>
+            <small>Duplica os últimos volumes.</small>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Observações</span>
+          <textarea id="description" rows="4" placeholder="Digite as observações da remessa" required></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button class="button button-outline" id="clearButton" type="button">Limpar campos</button>
+          <button class="button button-primary" type="submit">Gerar etiquetas <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card preview-card">
+      <div class="preview-heading">
+        <div>
+          <p class="eyebrow">PRÉVIA DE IMPRESSÃO</p>
+          <h2 id="previewTitle">Suas etiquetas aparecerão aqui</h2>
+        </div>
+        <div class="preview-actions">
+          <label class="sheet-select" for="labelsPerSheet">
+            <span>Etiquetas por folha</span>
+            <select id="labelsPerSheet">
+              <option value="10" selected>10 — 2 colunas</option>
+              <option value="6">6 — largura total</option>
+            </select>
+          </label>
+          <button class="button button-primary print-button" id="printButton" type="button" disabled>Imprimir <span aria-hidden="true">⌘P</span></button>
+        </div>
+      </div>
+      <div id="preview" class="preview-area">
+        <div class="empty-state">
+          <div class="empty-icon" aria-hidden="true">▤</div>
+          <strong>Preencha os dados da remessa</strong>
+          <span>Depois, gere a prévia para conferir as etiquetas antes de imprimir.</span>
+        </div>
+      </div>
+      <p class="print-note">A4 vertical • 10 etiquetas em 2 colunas ou 6 etiquetas na largura total • escala 100%</p>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="settingsModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-heading">
+        <div>
+          <p class="eyebrow">CADASTROS LOCAIS</p>
+          <h2 id="settingsTitle">Configurações</h2>
+        </div>
+        <button class="icon-button" id="closeSettings" type="button" aria-label="Fechar">×</button>
+      </div>
+
+      <div class="settings-grid">
+        <section class="company-list-panel">
+          <div class="subheading">
+            <h3>Empresas</h3>
+          </div>
+          <div id="companyList" class="company-list"></div>
+          <p class="storage-note">Os dados ficam na pasta <code>dados</code> ao lado do inicializador.</p>
+        </section>
+
+        <form class="company-editor" id="companyForm">
+          <div class="subheading">
+            <h3 id="companyFormTitle">Adicionar empresa</h3>
+          </div>
+          <input id="companyId" type="hidden">
+          <label class="field">
+            <span>Nome da empresa</span>
+            <input id="companyName" type="text" maxlength="120" required>
+          </label>
+          <label class="field">
+            <span>CNPJ</span>
+            <input id="companyCnpj" type="text" maxlength="18" inputmode="text" autocomplete="off" spellcheck="false" placeholder="00.000.000/0000-00" aria-describedby="cnpjHint" required>
+            <small id="cnpjHint">14 posições; letras e números, com 2 números no final. A máscara é automática.</small>
+          </label>
+          <label class="field">
+            <span>Logo (PNG)</span>
+            <input id="companyLogo" type="file" accept="image/png">
+            <small>PNG de até 2 MB. A imagem será redimensionada para caber na etiqueta.</small>
+          </label>
+          <div class="logo-preview-wrap" id="logoPreviewWrap" hidden>
+            <img id="logoPreview" alt="Prévia da logo">
+            <label class="checkbox-line"><input id="removeLogo" type="checkbox"> Remover logo cadastrada</label>
+          </div>
+          <div class="editor-actions">
+            <button class="button button-outline" id="cancelCompanyEdit" type="button">Cancelar</button>
+            <button class="button button-primary" type="submit">Salvar empresa</button>
+          </div>
+          <p class="form-message" id="companyMessage" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <div id="printRoot" aria-hidden="true"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
